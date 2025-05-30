@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Titanic Insights",
+    "section": "",
+    "text": "This website presents a brief analysis of the passenger data from the RMS Titanic. The analysis includes:\n\nSurvival rates based on passenger class.\nThe relationship between passenger age and the fare they paid.\n\nUse the navigation bar above to explore the different analyses.\nThe data used is the well-known Titanic dataset.\n Source: Boyan Dimitrov/Shutterstock"
+  },
+  {
+    "objectID": "index.html#exploring-the-titanic-dataset",
+    "href": "index.html#exploring-the-titanic-dataset",
+    "title": "Titanic Insights",
+    "section": "",
+    "text": "This website presents a brief analysis of the passenger data from the RMS Titanic. The analysis includes:\n\nSurvival rates based on passenger class.\nThe relationship between passenger age and the fare they paid.\n\nUse the navigation bar above to explore the different analyses.\nThe data used is the well-known Titanic dataset.\n Source: Boyan Dimitrov/Shutterstock"
+  },
+  {
+    "objectID": "pclass_analysis.html",
+    "href": "pclass_analysis.html",
+    "title": "Survival Rate by Passenger Class",
+    "section": "",
+    "text": "This page analyzes survival rates by socio-economic class (Pclass).\nFirst, let’s load libraries and data.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\ntitanic_df = pd.read_csv('data/titanic.csv')\n\n\n\nCalculating and Visualising Survival Rates\n\n\nCode\npclass_survival_rate = titanic_df.groupby('pclass')['survived'].mean().reset_index()\nprint(\"Survival rate by Pclass:\")\nprint(pclass_survival_rate)\n\nplt.figure(figsize=(8, 5))\nsns.barplot(x='pclass', y='survived', data=pclass_survival_rate, palette='viridis', hue='pclass', dodge=False, legend=False)\nplt.title('Survival Rate by Passenger Class')\nplt.xlabel('Passenger Class')\nplt.ylabel('Survival Rate')\nplt.xticks(ticks=[0,1,2], labels=['1st Class', '2nd Class', '3rd Class'])\nplt.grid(axis='y', linestyle='--', alpha=0.7)\nplt.show()\n\n\nSurvival rate by Pclass:\n   pclass  survived\n0       1  0.629630\n1       2  0.472826\n2       3  0.242363\n\n\n\n\n\nSurvival Rate by Passenger Class"
+  },
+  {
+    "objectID": "age_fare_analysis.html",
+    "href": "age_fare_analysis.html",
+    "title": "Age vs. Fare Analysis",
+    "section": "",
+    "text": "This page explores passenger age vs. fare paid.\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\ntitanic_df = pd.read_csv('data/titanic.csv')\n\n\n\nScatter Plot: Age vs. Fare\nPassengers with unknown age are excluded.\n\n\nCode\ntitanic_age_fare = titanic_df.dropna(subset=['age'])\nprint(f\"Number of passengers with known age: {len(titanic_age_fare)}\")\n\nplt.figure(figsize=(10, 6))\nsns.scatterplot(x='age', y='fare', hue='survived', data=titanic_age_fare, alpha=0.7, palette={0: '#377eb8', 1: '#ff7f00'})\nplt.title('Age vs. Fare (Coloured by Survival)')\nplt.xlabel('Age (Years)')\nplt.ylabel('Fare Paid')\nplt.legend(title='Survived (0=No, 1=Yes)')\nplt.grid(True, linestyle='--', alpha=0.7)\nplt.show()\n\n\nNumber of passengers with known age: 714\n\n\n\n\n\nScatter Plot of Age vs. Fare, Coloured by Survival Status"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]

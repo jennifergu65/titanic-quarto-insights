@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Titanic Insights – Titanic Data</title>
+<title>Survival Rate by Passenger Class – Titanic Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -90,11 +125,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pclass_analysis.html"> 
+    <a class="nav-link active" href="./pclass_analysis.html" aria-current="page"> 
 <span class="menu-text">Survival by Class</span></a>
   </li>  
   <li class="nav-item">
@@ -121,7 +156,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#exploring-the-titanic-dataset" id="toc-exploring-the-titanic-dataset" class="nav-link active" data-scroll-target="#exploring-the-titanic-dataset">Exploring the Titanic Dataset</a></li>
+  <li><a href="#calculating-and-visualising-survival-rates" id="toc-calculating-and-visualising-survival-rates" class="nav-link active" data-scroll-target="#calculating-and-visualising-survival-rates">Calculating and Visualising Survival Rates</a></li>
   </ul>
 </nav>
     </div>
@@ -130,7 +165,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Titanic Insights</h1>
+<h1 class="title">Survival Rate by Passenger Class</h1>
 </div>
 
 
@@ -147,16 +182,52 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="exploring-the-titanic-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="exploring-the-titanic-dataset">Exploring the Titanic Dataset</h2>
-<p>This website presents a brief analysis of the passenger data from the RMS Titanic. The analysis includes:</p>
-<ul>
-<li>Survival rates based on passenger class.</li>
-<li>The relationship between passenger age and the fare they paid.</li>
-</ul>
-<p>Use the navigation bar above to explore the different analyses.</p>
-<p>The data used is the well-known Titanic dataset.</p>
-<p><img src="https://assets.iflscience.com/assets/articleNo/75327/aImg/77866/titanic-hit-iceberg-head-on-o.webp" class="img-fluid"> <em>Source: Boyan Dimitrov/Shutterstock</em></p>
+<p>This page analyzes survival rates by socio-economic class (Pclass).</p>
+<p>First, let’s load libraries and data.</p>
+<div id="setup-libs-data-pclass" class="cell" data-message="false" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>titanic_df <span class="op">=</span> pd.read_csv(<span class="st">'data/titanic.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="calculating-and-visualising-survival-rates" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-and-visualising-survival-rates">Calculating and Visualising Survival Rates</h3>
+<div id="cell-pclass-survival-plot" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pclass_survival_rate <span class="op">=</span> titanic_df.groupby(<span class="st">'pclass'</span>)[<span class="st">'survived'</span>].mean().reset_index()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Survival rate by Pclass:"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pclass_survival_rate)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">'pclass'</span>, y<span class="op">=</span><span class="st">'survived'</span>, data<span class="op">=</span>pclass_survival_rate, palette<span class="op">=</span><span class="st">'viridis'</span>, hue<span class="op">=</span><span class="st">'pclass'</span>, dodge<span class="op">=</span><span class="va">False</span>, legend<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Survival Rate by Passenger Class'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Passenger Class'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Survival Rate'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.xticks(ticks<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>], labels<span class="op">=</span>[<span class="st">'1st Class'</span>, <span class="st">'2nd Class'</span>, <span class="st">'3rd Class'</span>])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'y'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Survival rate by Pclass:
+   pclass  survived
+0       1  0.629630
+1       2  0.472826
+2       3  0.242363</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div id="pclass-survival-plot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="pclass_analysis_files/figure-html/pclass-survival-plot-output-2.png" width="663" height="449" class="figure-img"></p>
+<figcaption>Survival Rate by Passenger Class</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
