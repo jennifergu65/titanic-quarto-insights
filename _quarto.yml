@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Titanic Data"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: pclass_analysis.qmd
+        text: Survival by Class
+      - href: age_fare_analysis.qmd
+        text: Age vs. Fare
+      - about.qmd
+  page-footer: "Build with Quarto by Jennifer Gu"
+
+format:
+  html:
+    theme:
+      - minty
+    css: styles.css
+    toc: true
+    code-fold: true
+
+
+
