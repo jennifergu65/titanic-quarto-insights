@@ -13,12 +13,11 @@ website:
       - href: age_fare_analysis.qmd
         text: Age vs. Fare
       - about.qmd
-  page-footer: "Build with Quarto by Jennifer Gu"
+  page-footer: "Built with Quarto by Jennifer Gu"
 
 format:
   html:
-    theme:
-      - minty
+    theme: minty
     css: styles.css
     toc: true
     code-fold: true
